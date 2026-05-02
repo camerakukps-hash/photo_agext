@@ -66,7 +66,6 @@ function renderAdminList(collections) {
         row.className = 'admin-list-item';
         row.innerHTML = `
             <div class="admin-item-info">
-            <img src="https://picsum.photos/seed/${item.id}/200/200" alt="Preview" class="admin-item-img">
             <span><strong>${escapeHTML(item.name)}</strong> <br><small>${new Date(item.dateAdded).toLocaleDateString()}</small></span>
             </div>
             <button onclick="deleteCollection('${item.id}')" class="delete-btn" title="Delete">
