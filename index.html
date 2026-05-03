@@ -18,10 +18,7 @@
 
   <nav class="navbar">
     <a href="./" class="logo">PHOTO_AGEXT</a>
-    <div class="nav-links">
-      <a href="./">Gallery</a>
-      <a href="documents.html">เอกสารต่างๆ</a>
-      <a href="grade.html">ระบบตรวจเกรด</a>
+    <div class="nav-right">
       <div class="theme-switch-wrapper">
         <label class="theme-switch" for="themeToggleSwitch">
           <input type="checkbox" id="themeToggleSwitch" />
@@ -31,13 +28,19 @@
           </div>
         </label>
       </div>
+      <div class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="./">Gallery</a>
+      <a href="documents.html">เอกสารต่างๆ</a>
+      <a href="grade.html">ระบบตรวจเกรด</a>
     </div>
   </nav>
 
   <main class="container">
     <div class="page-header">
       <h1>Photo Collections</h1>
-
+      <p>A minimalist gallery for sharing Google Drive moments.</p>
     </div>
 
     <div class="gallery-grid" id="galleryGrid">
