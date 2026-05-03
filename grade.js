@@ -80,8 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
             resultBox.innerHTML += `<div class="result-box result-good" style="display:block;"><h4 style="color:#388e3c;"><i class="fas fa-shield-alt"></i> สถานะปัจจุบัน: ปกติ</h4><p>เกรดของคุณพ้นโปรอยู่แล้ว รักษามาตรฐานไว้นะครับ</p></div>`;
             resultBox.innerHTML += renderRequirement(reqNormal, 'เป้าหมายรักษาสถานะปกติ (GPAX 2.00)', 'เพื่อไม่ให้เกรดสะสมตกลงมาติดโปร', 'normal');
         } else {
-            resultBox.innerHTML += renderRequirement(reqLow, 'เป้าหมายหนีโปรต่ำสุด (GPAX 1.76)', 'เพื่อให้รอดพ้นจากการโดนรีไทร์ขั้นต่ำสุด', 'prob');
-            resultBox.innerHTML += renderRequirement(reqNormal, 'เป้าหมายพ้นโปรสมบูรณ์ (GPAX 2.00)', 'เพื่อให้หลุดจากสถานะโปรเบชั่นทั้งหมด กลับเป็นปกติ', 'normal');
+            resultBox.innerHTML += renderRequirement(reqLow, 'เป้าหมายพ้นโปรต่ำสุด (GPAX 1.76)', 'เพื่อให้รอดพ้นจากการโดนรีไทร์ขั้นต่ำสุด', 'prob');
+            resultBox.innerHTML += renderRequirement(reqNormal, 'เป้าหมายพ้นโปรสมบูรณ์ (GPAX 2.00)', 'เพื่อให้หลุดจากสถานะติดโปร กลับเป็นปกติ', 'normal');
         }
         
         // Scroll to result
