@@ -1,8 +1,11 @@
 const BIN_URL = "https://api.jsonbin.io/v3/b/69d5e656856a6821890d8909";
 const API_KEY = "$2a$10$/7rPjhs9VC0KmAsekZPVYeQhIkDfHoLsbB8bCWbDptzre/cXev1JK";
 
+let allCollections = [];
+
 document.addEventListener('DOMContentLoaded', async () => {
     const grid = document.getElementById('galleryGrid');
+    const searchInput = document.getElementById('searchInput');
     
     // ระบบ Caching เพื่อให้โหลดหน้าเว็บได้ทันที
     const cacheKey = 'gallery_collections_cache';
@@ -11,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function renderItems(collections) {
         if (!collections || collections.length === 0) {
-            grid.innerHTML = '';
+            grid.innerHTML = '<div class="empty-state"><p>ไม่พบโฟลเดอร์ที่ค้นหา</p></div>';
             return;
         }
 
@@ -44,10 +47,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            if (!searchTerm) {
+                renderItems(allCollections);
+                return;
+            }
+            
+            const filtered = allCollections.filter(item => 
+                item.name && item.name.toLowerCase().includes(searchTerm)
+            );
+            renderItems(filtered);
+        });
+    }
+
     // 1. ดึงข้อมูลจาก Cache มาแสดงทันทีที่เข้าเว็บ (ไม่ต้องรอโหลด)
     if (cachedData) {
         try {
-            renderItems(JSON.parse(cachedData));
+            allCollections = JSON.parse(cachedData);
+            renderItems(allCollections);
             isInitialRender = false;
         } catch(e) {}
     }
@@ -82,12 +101,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const allRecords = data.record || [];
         const collections = allRecords.filter(item => item.id !== "SYSTEM_SETTINGS");
+        allCollections = collections;
         const newCacheData = JSON.stringify(collections);
         
         // ถ้าข้อมูลบนเซิร์ฟเวอร์มีการเปลี่ยนแปลง (ไม่เหมือนใน Cache) ค่อยวาดหน้าจอใหม่
         if (newCacheData !== cachedData) {
             localStorage.setItem(cacheKey, newCacheData);
-            renderItems(collections);
+            const currentSearch = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            if (currentSearch) {
+                const filtered = allCollections.filter(item => 
+                    item.name && item.name.toLowerCase().includes(currentSearch)
+                );
+                renderItems(filtered);
+            } else {
+                renderItems(allCollections);
+            }
         }
     } catch (e) {
         // ถ้าดึงข้อมูลพัง และไม่มีข้อมูลเก่าเลย
