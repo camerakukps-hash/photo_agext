@@ -133,6 +133,24 @@
   color: white;
 }
 
+.edit-btn {
+  background: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-btn:hover {
+  background: #ff9800;
+  color: white;
+}
+
 .file-input {
   background: var(--input-bg);
   padding: 0.8rem;
