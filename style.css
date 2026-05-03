@@ -11,6 +11,40 @@
   --border-radius: 16px;
   --shadow: 0 8px 32px rgba(46, 125, 50, 0.1);
   --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --title-gradient: linear-gradient(135deg, #1b5e20, #4caf50);
+  --bubble-color-1: rgba(76, 175, 80, 0.15);
+  --bubble-color-2: rgba(129, 199, 132, 0.2);
+  --bubble-color-3: rgba(165, 214, 167, 0.15);
+  --bubble-color-4: rgba(200, 230, 201, 0.3);
+  --bubble-color-5: rgba(102, 187, 106, 0.15);
+  --nav-bg: rgba(255, 255, 255, 0.3);
+  --nav-shadow: rgba(0, 0, 0, 0.05);
+  --card-border: rgba(255, 255, 255, 0.5);
+  --modal-bg: rgba(0, 0, 0, 0.4);
+  --input-bg: rgba(255, 255, 255, 0.8);
+  --skeleton-bg: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 25%, rgba(76, 175, 80, 0.25) 50%, rgba(76, 175, 80, 0.1) 75%);
+}
+
+[data-theme="dark"] {
+  --bg-color: #0b1a10;
+  --surface-color: rgba(20, 30, 20, 0.85);
+  --text-primary: #e8f5e9;
+  --text-secondary: #81c784;
+  --accent-color: #4caf50;
+  --accent-hover: #81c784;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --title-gradient: linear-gradient(135deg, #81c784, #a5d6a7);
+  --bubble-color-1: rgba(76, 175, 80, 0.05);
+  --bubble-color-2: rgba(129, 199, 132, 0.08);
+  --bubble-color-3: rgba(165, 214, 167, 0.05);
+  --bubble-color-4: rgba(200, 230, 201, 0.1);
+  --bubble-color-5: rgba(102, 187, 106, 0.05);
+  --nav-bg: rgba(11, 26, 16, 0.7);
+  --nav-shadow: rgba(0, 0, 0, 0.5);
+  --card-border: rgba(76, 175, 80, 0.2);
+  --modal-bg: rgba(0, 0, 0, 0.7);
+  --input-bg: rgba(20, 30, 20, 0.8);
+  --skeleton-bg: linear-gradient(90deg, rgba(76, 175, 80, 0.05) 25%, rgba(76, 175, 80, 0.15) 50%, rgba(76, 175, 80, 0.05) 75%);
 }
 
 * {
@@ -26,7 +60,6 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f0fdf4; /* Very light clean green */
   overflow-x: hidden;
   position: relative;
 }
@@ -49,7 +82,7 @@ body {
   list-style: none;
   width: 20px;
   height: 20px;
-  background: rgba(76, 175, 80, 0.15); /* light green bubbles */
+  background: var(--bubble-color-1);
   animation: floatUp 25s linear infinite;
   bottom: -200px;
   border-radius: 50%; /* Make them perfect bubbles */
@@ -62,7 +95,7 @@ body {
   width: 80px;
   height: 80px;
   animation-delay: 0s;
-  background: rgba(129, 199, 132, 0.2);
+  background: var(--bubble-color-2);
 }
 
 .background-bubbles li:nth-child(2) {
@@ -71,7 +104,7 @@ body {
   height: 30px;
   animation-delay: 2s;
   animation-duration: 12s;
-  background: rgba(165, 214, 167, 0.15);
+  background: var(--bubble-color-3);
 }
 
 .background-bubbles li:nth-child(3) {
@@ -79,7 +112,7 @@ body {
   width: 40px;
   height: 40px;
   animation-delay: 4s;
-  background: rgba(76, 175, 80, 0.1);
+  background: var(--bubble-color-1);
 }
 
 .background-bubbles li:nth-child(4) {
@@ -88,7 +121,7 @@ body {
   height: 60px;
   animation-delay: 0s;
   animation-duration: 18s;
-  background: rgba(200, 230, 201, 0.3);
+  background: var(--bubble-color-4);
 }
 
 .background-bubbles li:nth-child(5) {
@@ -96,7 +129,7 @@ body {
   width: 20px;
   height: 20px;
   animation-delay: 0s;
-  background: rgba(102, 187, 106, 0.15);
+  background: var(--bubble-color-5);
 }
 
 .background-bubbles li:nth-child(6) {
@@ -104,7 +137,7 @@ body {
   width: 110px;
   height: 110px;
   animation-delay: 3s;
-  background: rgba(165, 214, 167, 0.2);
+  background: var(--bubble-color-3);
 }
 
 .background-bubbles li:nth-child(7) {
@@ -112,7 +145,7 @@ body {
   width: 150px;
   height: 150px;
   animation-delay: 7s;
-  background: rgba(200, 230, 201, 0.2);
+  background: var(--bubble-color-4);
 }
 
 .background-bubbles li:nth-child(8) {
@@ -121,7 +154,7 @@ body {
   height: 25px;
   animation-delay: 15s;
   animation-duration: 45s;
-  background: rgba(129, 199, 132, 0.15);
+  background: var(--bubble-color-2);
 }
 
 .background-bubbles li:nth-child(9) {
@@ -130,7 +163,7 @@ body {
   height: 15px;
   animation-delay: 2s;
   animation-duration: 35s;
-  background: rgba(76, 175, 80, 0.1);
+  background: var(--bubble-color-1);
 }
 
 .background-bubbles li:nth-child(10) {
@@ -139,7 +172,7 @@ body {
   height: 150px;
   animation-delay: 0s;
   animation-duration: 11s;
-  background: rgba(102, 187, 106, 0.1);
+  background: var(--bubble-color-5);
 }
 
 @keyframes floatUp {
@@ -165,10 +198,10 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 3rem;
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--nav-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px var(--nav-shadow);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -247,7 +280,7 @@ body {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #1b5e20, #4caf50);
+  background: var(--title-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -271,7 +304,7 @@ body {
   background: var(--surface-color);
   border-radius: var(--border-radius);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--card-border);
   box-shadow: var(--shadow);
 }
 
@@ -286,7 +319,7 @@ body {
   background: var(--surface-color);
   border-radius: var(--border-radius);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--card-border);
   box-shadow: var(--shadow);
   transition: var(--transition);
   display: flex;
@@ -395,7 +428,7 @@ body {
   text-decoration: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   transition: var(--transition);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--card-border);
   font-size: 1.2rem;
 }
 
@@ -458,7 +491,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--modal-bg);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   z-index: 1000;
@@ -481,7 +514,7 @@ body {
   max-width: 400px;
   text-align: center;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--card-border);
   transform: translateY(-20px);
   transition: transform 0.3s ease;
   position: relative;
@@ -527,7 +560,7 @@ body {
   letter-spacing: 5px;
   margin-bottom: 1.5rem;
   outline: none;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--input-bg);
   transition: var(--transition);
   font-family: inherit;
 }
@@ -587,7 +620,7 @@ body {
   background: var(--surface-color);
   border-radius: var(--border-radius);
   padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--card-border);
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
@@ -610,7 +643,7 @@ body {
 }
 
 .skeleton-item {
-  background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 25%, rgba(76, 175, 80, 0.25) 50%, rgba(76, 175, 80, 0.1) 75%);
+  background: var(--skeleton-bg);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite linear;
   border-radius: 4px;
