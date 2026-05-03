@@ -15,27 +15,11 @@ function initTheme() {
     }
 }
 
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem(STORAGE_KEY, newTheme);
-    
-    updateThemeIcon();
-}
-
-function updateThemeIcon() {
-    const icon = document.getElementById('themeIcon');
-    if (!icon) return;
-    
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    if (currentTheme === 'dark') {
-        icon.classList.remove('fa-moon');
-        icon.classList.add('fa-sun');
-    } else {
-        icon.classList.remove('fa-sun');
-        icon.classList.add('fa-moon');
+function updateToggleSwitch() {
+    const toggle = document.getElementById('themeToggleSwitch');
+    if (toggle) {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        toggle.checked = currentTheme === 'dark';
     }
 }
 
@@ -44,13 +28,14 @@ initTheme();
 
 // Setup UI after DOM loads
 document.addEventListener('DOMContentLoaded', () => {
-    updateThemeIcon();
+    updateToggleSwitch();
     
-    const themeBtn = document.getElementById('themeToggleBtn');
-    if (themeBtn) {
-        themeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleTheme();
+    const toggle = document.getElementById('themeToggleSwitch');
+    if (toggle) {
+        toggle.addEventListener('change', (e) => {
+            const newTheme = e.target.checked ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem(STORAGE_KEY, newTheme);
         });
     }
 });
