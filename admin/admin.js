@@ -111,9 +111,14 @@ function renderAdminList(collections) {
             <div class="admin-item-info">
             <span><strong>${escapeHTML(item.name)}</strong> <br><small>${new Date(item.dateAdded).toLocaleDateString()}</small></span>
             </div>
-            <button onclick="deleteCollection('${item.id}')" class="delete-btn" title="Delete">
-            <i class="fas fa-trash"></i>
-            </button>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="edit-btn" onclick="editCollection('${item.id}')" title="แก้ไขชื่อ">
+                <i class="fas fa-edit"></i>
+                </button>
+                <button class="delete-btn" onclick="deleteCollection('${item.id}')" title="ลบ">
+                <i class="fas fa-trash"></i>
+                </button>
+            </div>
         `;
         adminList.appendChild(row);
     });
@@ -127,6 +132,21 @@ window.deleteCollection = async function(id) {
         let updatedData = collectionsTemp.filter(c => c.id !== id);
         await saveCollections(updatedData);
         renderAdminList(updatedData);
+    }
+};
+
+window.editCollection = async function(id) {
+    const item = collectionsTemp.find(c => c.id === id);
+    if (!item) return;
+    
+    const newName = prompt('แก้ไขชื่ออัลบั้ม:', item.name);
+    if (newName !== null && newName.trim() !== '') {
+        const adminBtn = document.querySelector(`button[onclick="editCollection('${id}')"]`);
+        if (adminBtn) adminBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
+        
+        item.name = newName.trim();
+        await saveCollections(collectionsTemp);
+        renderAdminList(collectionsTemp);
     }
 };
 
