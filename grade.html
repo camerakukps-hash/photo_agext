@@ -151,10 +151,7 @@
 
   <nav class="navbar">
     <a href="./" class="logo">PHOTO_AGEXT</a>
-    <div class="nav-links">
-      <a href="./">Gallery</a>
-      <a href="documents.html">เอกสารต่างๆ</a>
-      <a href="grade.html">ระบบตรวจเกรด</a>
+    <div class="nav-right">
       <div class="theme-switch-wrapper">
         <label class="theme-switch" for="themeToggleSwitch">
           <input type="checkbox" id="themeToggleSwitch" />
@@ -164,13 +161,19 @@
           </div>
         </label>
       </div>
+      <div class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="./">Gallery</a>
+      <a href="documents.html">เอกสารต่างๆ</a>
+      <a href="grade.html">ระบบตรวจเกรด</a>
     </div>
   </nav>
 
   <main class="container">
     <div class="page-header">
-      <h1>ระบบวางแผนเกรด</h1>
-      <p>คำนวณ GPA เพื่อพ้นสถานะวิทยาทัณฑ์</p>
+      <h1>ระบบวิเคราะห์เกรด (Probation)</h1>
+      <p>คำนวณเป้าหมายเพื่อรอดโปรต่ำและพ้นโปร</p>
     </div>
 
     <div class="grade-container">
@@ -184,11 +187,11 @@
           </h3>
           <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
             <div class="input-group" style="text-align: left; max-width: 200px;">
-              <label for="quickCreds" style="color: #f57f17;">หน่วยกิตสมสะสมทั้งหมด (ล่าสุด)</label>
+              <label for="quickCreds" style="color: #f57f17;">หน่วยกิตสะสม ตอนนี้ *</label>
               <input type="number" id="quickCreds" min="0" step="1" placeholder="เช่น 45">
             </div>
             <div class="input-group" style="text-align: left; max-width: 200px;">
-              <label for="quickGPA" style="color: #f57f17;">เกรดเฉลี่ยสะสม (ล่าสุด)</label>
+              <label for="quickGPA" style="color: #f57f17;">เกรดเฉลี่ยสะสม ตอนนี้ *</label>
               <input type="number" id="quickGPA" min="0" max="4.00" step="0.01" placeholder="เช่น 1.68">
             </div>
           </div>
