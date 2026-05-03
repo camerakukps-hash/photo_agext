@@ -408,6 +408,41 @@ input:checked + .slider:before {
   font-size: 1.1rem;
 }
 
+/* Search Bar */
+.search-container {
+  max-width: 600px;
+  margin: 1.5rem auto 0;
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem 1.5rem 1rem 3.5rem;
+  border: 2px solid rgba(76, 175, 80, 0.2);
+  border-radius: 30px;
+  font-size: 1.1rem;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  transition: var(--transition);
+  font-family: inherit;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.2);
+}
+
 /* Gallery Grid */
 .gallery-grid {
   display: grid;
