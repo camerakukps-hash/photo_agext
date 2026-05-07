@@ -19,9 +19,10 @@
   <nav class="navbar">
     <a href="./" class="logo">PHOTO_AGEXT</a>
     <div class="nav-right">
-      <a href="#searchInput" class="search-nav-btn" onclick="setTimeout(() => document.getElementById('searchInput').focus(), 100);" title="ค้นหาโฟลเดอร์">
+      <div class="nav-search-wrapper">
         <i class="fas fa-search"></i>
-      </a>
+        <input type="text" id="searchInput" class="nav-search-input" placeholder="ค้นหาโฟลเดอร์...">
+      </div>
       <div class="theme-switch-wrapper">
         <label class="theme-switch" for="themeToggleSwitch">
           <input type="checkbox" id="themeToggleSwitch" />
@@ -43,10 +44,6 @@
   <main class="container">
     <div class="page-header">
       <h1>Photo Collections</h1>
-      <div class="search-container">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="searchInput" class="search-input" placeholder="ค้นหาโฟลเดอร์... (พิมพ์ชื่อโฟลเดอร์)">
-      </div>
     </div>
 
     <div class="gallery-grid" id="galleryGrid">
