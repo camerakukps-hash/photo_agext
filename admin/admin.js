@@ -108,11 +108,15 @@ function renderAdminList(collections) {
         const row = document.createElement('div');
         row.className = 'admin-list-item';
         row.innerHTML = `
-            <div class="admin-item-info">
-            <span><strong>${escapeHTML(item.name)}</strong> <br><small>${new Date(item.dateAdded).toLocaleDateString()}</small></span>
+            <div class="admin-item-info" style="overflow: hidden; flex: 1; padding-right: 10px;">
+            <span>
+                <strong>${escapeHTML(item.name)}</strong> 
+                <br><small>${new Date(item.dateAdded).toLocaleDateString()}</small>
+                <br><a href="${escapeHTML(item.url)}" target="_blank" style="font-size: 0.8rem; color: var(--accent-color); word-break: break-all; text-decoration: underline;"><i class="fab fa-google-drive"></i> ${escapeHTML(item.url)}</a>
+            </span>
             </div>
-            <div style="display: flex; gap: 0.5rem;">
-                <button class="edit-btn" onclick="editCollection('${item.id}')" title="แก้ไขชื่อ">
+            <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+                <button class="edit-btn" onclick="editCollection('${item.id}')" title="แก้ไขชื่อและลิ้งก์">
                 <i class="fas fa-edit"></i>
                 </button>
                 <button class="delete-btn" onclick="deleteCollection('${item.id}')" title="ลบ">
@@ -140,14 +144,23 @@ window.editCollection = async function(id) {
     if (!item) return;
     
     const newName = prompt('แก้ไขชื่ออัลบั้ม:', item.name);
-    if (newName !== null && newName.trim() !== '') {
-        const adminBtn = document.querySelector(`button[onclick="editCollection('${id}')"]`);
-        if (adminBtn) adminBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
-        
-        item.name = newName.trim();
-        await saveCollections(collectionsTemp);
-        renderAdminList(collectionsTemp);
+    if (newName === null) return;
+    
+    const newUrl = prompt('แก้ไขลิ้งก์ Google Drive:', item.url || '');
+    if (newUrl === null) return;
+    
+    if (newName.trim() === '' || newUrl.trim() === '') {
+        alert('ชื่อและลิ้งก์ต้องไม่เป็นค่าว่างครับ');
+        return;
     }
+    
+    const adminBtn = document.querySelector(`button[onclick="editCollection('${id}')"]`);
+    if (adminBtn) adminBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
+    
+    item.name = newName.trim();
+    item.url = newUrl.trim();
+    await saveCollections(collectionsTemp);
+    renderAdminList(collectionsTemp);
 };
 
 // ---------------- UI: จัดการตั้งค่า GAS URLs ---------------- //
@@ -329,23 +342,60 @@ if (gasUrlsList) gasUrlsList.innerHTML = '<p style="color:var(--text-secondary);
 fetchCollections();
 
 
-// ---------------- ระบบสร้างไดรฟ์อัตโนมัติ ---------------- //
+// ---------------- ระบบเพิ่ม/สร้างไดรฟ์ ---------------- //
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const name = document.getElementById('collectionName').value.trim();
+    const customUrlInput = document.getElementById('customUrl');
+    const customUrl = customUrlInput ? customUrlInput.value.trim() : '';
     const dateAdded = new Date().toISOString();
 
     if (!name) return;
 
-    if (GAS_URLS.length === 0) {
-        alert("คุณไม่เหลือลิ้งก์ Google Script ให้ระบบทำงานแล้วครับ กรุณาเพิ่มลิ้งก์ในตั้งค่าก่อนครับ!");
+    const submitBtn = form.querySelector('.submit-btn');
+    const originalText = submitBtn.innerHTML;
+
+    // 1. ถ้าแอดมินใส่ลิ้งก์ระบุเอง (customUrl) ให้ใช้ลิ้งก์นี้บันทึกตรงๆ ได้เลย
+    if (customUrl !== '') {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังบันทึกข้อมูล...';
+        submitBtn.disabled = true;
+
+        try {
+            const newLink = {
+                id: Date.now().toString(),
+                name: name,
+                url: customUrl,
+                dateAdded: dateAdded
+            };
+
+            const updatedData = [...collectionsTemp, newLink];
+            await saveCollections(updatedData);
+
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            
+            successMsg.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 8px;"></i> <span style="color:var(--text-primary)">เพิ่มอัลบั้มและระบุลิ้งก์สำเร็จ!</span><br><br><a href="${customUrl}" target="_blank" style="display:inline-block; padding: 0.75rem 1rem; background: var(--accent-color); color: white; border-radius: 8px; text-decoration: none; font-weight: bold;"><i class="fas fa-external-link-alt"></i> คลิกลิ้งก์นี้เพื่อทดสอบเปิดไดรฟ์</a>`;
+            successMsg.style.display = 'block';
+            form.reset();
+            
+            renderAdminList(updatedData);
+        } catch(err) {
+            console.error(err);
+            alert("เกิดข้อผิดพลาดในการบันทึก: " + err.message);
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
         return;
     }
 
-    const submitBtn = form.querySelector('.submit-btn');
-    const originalText = submitBtn.innerHTML;
+    // 2. ถ้าไม่ได้ระบุลิ้งก์เอง ให้ใช้ระบบสั่งสร้างโฟลเดอร์ใน Google Drive อัตโนมัติผ่าน GAS
+    if (GAS_URLS.length === 0) {
+        alert("คุณไม่เหลือลิ้งก์ Google Script ให้ระบบทำงานแล้วครับ กรุณาเพิ่มลิ้งก์ในตั้งค่า หรือระบุลิ้งก์ไดรฟ์ด้วยตัวเองในช่อง 'Google Drive Link'");
+        return;
+    }
+
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังสั่งสร้างไฟล์...';
     submitBtn.disabled = true;
 
