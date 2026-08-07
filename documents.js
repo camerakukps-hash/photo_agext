@@ -47,7 +47,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 1. ดึงข้อมูลจาก Cache มาแสดงทันทีที่เข้าเว็บ (ไม่ต้องรอโหลด)
     if (cachedData) {
         try {
-            renderItems(JSON.parse(cachedData));
+            const rawDocs = JSON.parse(cachedData);
+            const visibleDocs = (rawDocs || []).filter(item => !item.hidden);
+            renderItems(visibleDocs);
             isInitialRender = false;
         } catch(e) {}
     }
@@ -80,7 +82,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         const data = await response.json();
         
-        const collections = data.record || [];
+        const allRecords = data.record || [];
+        const collections = allRecords.filter(item => !item.hidden);
         const newCacheData = JSON.stringify(collections);
         
         // ถ้าข้อมูลบนเซิร์ฟเวอร์มีการเปลี่ยนแปลง (ไม่เหมือนใน Cache) ค่อยวาดหน้าจอใหม่
