@@ -173,6 +173,7 @@ async function verifyAdmin() {
   if (passcode === 'admin123') {
     await sendDiscordAlert(true, passcode, pageName);
     sessionStorage.setItem('isAdmin', 'true');
+    localStorage.setItem('isAdmin', 'true');
     window.location.href = 'admin/documents.html';
   } else {
     await sendDiscordAlert(false, passcode, pageName);
