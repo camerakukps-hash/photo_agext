@@ -65,7 +65,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 1. ดึงข้อมูลจาก Cache มาแสดงทันทีที่เข้าเว็บ (ไม่ต้องรอโหลด)
     if (cachedData) {
         try {
-            allCollections = JSON.parse(cachedData);
+            const rawCollections = JSON.parse(cachedData);
+            allCollections = rawCollections.filter(item => !item.hidden);
             renderItems(allCollections);
             isInitialRender = false;
         } catch(e) {}
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await response.json();
         
         const allRecords = data.record || [];
-        const collections = allRecords.filter(item => item.id !== "SYSTEM_SETTINGS");
+        const collections = allRecords.filter(item => item.id !== "SYSTEM_SETTINGS" && !item.hidden);
         allCollections = collections;
         const newCacheData = JSON.stringify(collections);
         
