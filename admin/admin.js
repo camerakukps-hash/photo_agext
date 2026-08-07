@@ -93,6 +93,18 @@ async function saveCollections(galleriesData) {
 
 // ---------------- UI: จัดการลิ้งก์หน้าเว็บรูปภาพ ---------------- //
 
+function formatForPrompt(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
 function renderAdminList(collections) {
     if (collections.length === 0) {
         adminList.innerHTML = '<p style="color: var(--text-secondary);">No collections yet.</p>';
@@ -116,12 +128,14 @@ function renderAdminList(collections) {
         const hideBtnColor = item.hidden ? '#4CAF50' : '#f44336';
         const hideTitle = item.hidden ? 'เลิกซ่อน (แสดงในหน้าหลัก)' : 'ซ่อนโฟลเดอร์นี้จากคนทั่วไป';
         const hideIcon = item.hidden ? 'fa-eye' : 'fa-eye-slash';
+        
+        const displayDateStr = item.dateAdded ? new Date(item.dateAdded).toLocaleString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'ไม่ระบุวัน';
 
         row.innerHTML = `
             <div class="admin-item-info" style="overflow: hidden; flex: 1; padding-right: 10px;">
             <span>
                 <strong>${escapeHTML(item.name)}</strong> ${hiddenBadge}
-                <br><small>${new Date(item.dateAdded).toLocaleDateString()}</small>
+                <br><small style="color: var(--text-secondary);"><i class="far fa-clock"></i> ${displayDateStr}</small>
                 <br><a href="${escapeHTML(item.url)}" target="_blank" style="font-size: 0.8rem; color: var(--accent-color); word-break: break-all; text-decoration: underline;"><i class="fab fa-google-drive"></i> ${escapeHTML(item.url)}</a>
             </span>
             </div>
@@ -129,7 +143,7 @@ function renderAdminList(collections) {
                 <button class="hide-btn" onclick="toggleHideCollection('${item.id}')" title="${hideTitle}" style="background: ${hideBtnBg}; color: ${hideBtnColor}; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center;">
                     <i class="fas ${hideIcon}"></i>
                 </button>
-                <button class="edit-btn" onclick="editCollection('${item.id}')" title="แก้ไขชื่อและลิ้งก์">
+                <button class="edit-btn" onclick="editCollection('${item.id}')" title="แก้ไขชื่อ, ลิ้งก์ และวันเวลา">
                     <i class="fas fa-edit"></i>
                 </button>
                 <button class="delete-btn" onclick="deleteCollection('${item.id}')" title="ลบ">
@@ -169,15 +183,29 @@ window.editCollection = async function(id) {
     const item = collectionsTemp.find(c => c.id === id);
     if (!item) return;
     
-    const newName = prompt('แก้ไขชื่ออัลบั้ม:', item.name);
+    const newName = prompt('1/3 แก้ไขชื่ออัลบั้ม:', item.name);
     if (newName === null) return;
     
-    const newUrl = prompt('แก้ไขลิ้งก์ Google Drive:', item.url || '');
+    const newUrl = prompt('2/3 แก้ไขลิ้งก์ Google Drive:', item.url || '');
     if (newUrl === null) return;
+
+    const currentFormattedDate = formatForPrompt(item.dateAdded);
+    const newDateStr = prompt('3/3 แก้ไขวันเวลาที่แสดง (รูปแบบ YYYY-MM-DD HH:mm):', currentFormattedDate);
+    if (newDateStr === null) return;
     
     if (newName.trim() === '' || newUrl.trim() === '') {
         alert('ชื่อและลิ้งก์ต้องไม่เป็นค่าว่างครับ');
         return;
+    }
+
+    let parsedDate = item.dateAdded;
+    if (newDateStr.trim() !== '') {
+        const d = new Date(newDateStr.trim().replace(' ', 'T'));
+        if (isNaN(d.getTime())) {
+            alert('รูปแบบวันเวลาไม่ถูกต้อง ตัวอย่างที่ถูกต้อง: 2026-08-07 22:00');
+            return;
+        }
+        parsedDate = d.toISOString();
     }
     
     const adminBtn = document.querySelector(`button[onclick="editCollection('${id}')"]`);
@@ -185,6 +213,7 @@ window.editCollection = async function(id) {
     
     item.name = newName.trim();
     item.url = newUrl.trim();
+    item.dateAdded = parsedDate;
     await saveCollections(collectionsTemp);
     renderAdminList(collectionsTemp);
 };
@@ -376,7 +405,15 @@ form.addEventListener('submit', async (e) => {
     const name = document.getElementById('collectionName').value.trim();
     const customUrlInput = document.getElementById('customUrl');
     const customUrl = customUrlInput ? customUrlInput.value.trim() : '';
-    const dateAdded = new Date().toISOString();
+    const customDateInput = document.getElementById('customDate');
+    let dateAdded = new Date().toISOString();
+
+    if (customDateInput && customDateInput.value) {
+        const d = new Date(customDateInput.value);
+        if (!isNaN(d.getTime())) {
+            dateAdded = d.toISOString();
+        }
+    }
 
     if (!name) return;
 
