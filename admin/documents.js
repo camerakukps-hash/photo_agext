@@ -65,11 +65,15 @@ function renderAdminList(collections) {
         const row = document.createElement('div');
         row.className = 'admin-list-item';
         row.innerHTML = `
-            <div class="admin-item-info">
-            <span><strong>${escapeHTML(item.name)}</strong> <br><small>${new Date(item.dateAdded).toLocaleDateString()}</small></span>
+            <div class="admin-item-info" style="overflow: hidden; flex: 1; padding-right: 10px;">
+            <span>
+                <strong>${escapeHTML(item.name)}</strong> 
+                <br><small>${new Date(item.dateAdded).toLocaleDateString()}</small>
+                <br><a href="${escapeHTML(item.url)}" target="_blank" style="font-size: 0.8rem; color: var(--accent-color); word-break: break-all; text-decoration: underline;"><i class="fab fa-google-drive"></i> ${escapeHTML(item.url)}</a>
+            </span>
             </div>
-            <div style="display: flex; gap: 0.5rem;">
-                <button class="edit-btn" onclick="editCollection('${item.id}')" title="แก้ไขชื่อ">
+            <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+                <button class="edit-btn" onclick="editCollection('${item.id}')" title="แก้ไขชื่อและลิ้งก์">
                 <i class="fas fa-edit"></i>
                 </button>
                 <button class="delete-btn" onclick="deleteCollection('${item.id}')" title="Delete">
@@ -97,14 +101,23 @@ window.editCollection = async function(id) {
     if (!item) return;
     
     const newName = prompt('แก้ไขชื่อเอกสาร:', item.name);
-    if (newName !== null && newName.trim() !== '') {
-        const adminBtn = document.querySelector(`button[onclick="editCollection('${id}')"]`);
-        if (adminBtn) adminBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
-        
-        item.name = newName.trim();
-        await saveCollections(collectionsTemp);
-        renderAdminList(collectionsTemp);
+    if (newName === null) return;
+
+    const newUrl = prompt('แก้ไขลิ้งก์ Google Drive:', item.url || '');
+    if (newUrl === null) return;
+    
+    if (newName.trim() === '' || newUrl.trim() === '') {
+        alert('ชื่อและลิ้งก์ต้องไม่เป็นค่าว่างครับ');
+        return;
     }
+    
+    const adminBtn = document.querySelector(`button[onclick="editCollection('${id}')"]`);
+    if (adminBtn) adminBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
+    
+    item.name = newName.trim();
+    item.url = newUrl.trim();
+    await saveCollections(collectionsTemp);
+    renderAdminList(collectionsTemp);
 };
 
 // Initial Render
