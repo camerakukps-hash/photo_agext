@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
-    if (sessionStorage.getItem('isAdmin') !== 'true') {
+    if (sessionStorage.getItem('isAdmin') !== 'true' && localStorage.getItem('isAdmin') !== 'true') {
       window.location.href = '../';
     }
   </script>
@@ -40,6 +40,7 @@
       <a href="./">จัดการรูปภาพ</a>
       <a href="documents.html">จัดการเอกสาร</a>
       <a href="../" style="opacity: 0.7;">กลับหน้าบ้าน</a>
+      <a href="#" onclick="localStorage.removeItem('isAdmin'); sessionStorage.removeItem('isAdmin'); window.location.href='../';" style="color: #f44336;"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</a>
     </div>
   </nav>
 
