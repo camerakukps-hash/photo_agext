@@ -64,26 +64,52 @@ function renderAdminList(collections) {
         const escapeHTML = str => String(str || '').replace(/[&<>'"]/g, tag => ({'&': '&amp;','<': '&lt;','>': '&gt;',"'": '&#39;','"': '&quot;'}[tag] || tag));
         const row = document.createElement('div');
         row.className = 'admin-list-item';
+        if (item.hidden) {
+            row.style.opacity = '0.65';
+        }
+        
+        const hiddenBadge = item.hidden ? `<span style="background: rgba(244,67,54,0.15); color: #f44336; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px; font-weight: bold;"><i class="fas fa-eye-slash"></i> ซ่อนอยู่</span>` : '';
+        const hideBtnBg = item.hidden ? 'rgba(76,175,80,0.15)' : 'rgba(244, 67, 54, 0.15)';
+        const hideBtnColor = item.hidden ? '#4CAF50' : '#f44336';
+        const hideTitle = item.hidden ? 'เลิกซ่อน (แสดงในหน้าหลัก)' : 'ซ่อนเอกสารนี้จากคนทั่วไป';
+        const hideIcon = item.hidden ? 'fa-eye' : 'fa-eye-slash';
+
         row.innerHTML = `
             <div class="admin-item-info" style="overflow: hidden; flex: 1; padding-right: 10px;">
             <span>
-                <strong>${escapeHTML(item.name)}</strong> 
+                <strong>${escapeHTML(item.name)}</strong> ${hiddenBadge}
                 <br><small>${new Date(item.dateAdded).toLocaleDateString()}</small>
                 <br><a href="${escapeHTML(item.url)}" target="_blank" style="font-size: 0.8rem; color: var(--accent-color); word-break: break-all; text-decoration: underline;"><i class="fab fa-google-drive"></i> ${escapeHTML(item.url)}</a>
             </span>
             </div>
-            <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+            <div style="display: flex; gap: 0.5rem; flex-shrink: 0; align-items: center;">
+                <button class="hide-btn" onclick="toggleHideCollection('${item.id}')" title="${hideTitle}" style="background: ${hideBtnBg}; color: ${hideBtnColor}; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas ${hideIcon}"></i>
+                </button>
                 <button class="edit-btn" onclick="editCollection('${item.id}')" title="แก้ไขชื่อและลิ้งก์">
-                <i class="fas fa-edit"></i>
+                    <i class="fas fa-edit"></i>
                 </button>
                 <button class="delete-btn" onclick="deleteCollection('${item.id}')" title="Delete">
-                <i class="fas fa-trash"></i>
+                    <i class="fas fa-trash"></i>
                 </button>
             </div>
         `;
         adminList.appendChild(row);
     });
 }
+
+window.toggleHideCollection = async function(id) {
+    const item = collectionsTemp.find(c => c.id === id);
+    if (!item) return;
+    
+    item.hidden = !item.hidden;
+    
+    const adminBtn = document.querySelector(`button[onclick="toggleHideCollection('${id}')"]`);
+    if (adminBtn) adminBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
+    
+    await saveCollections(collectionsTemp);
+    renderAdminList(collectionsTemp);
+};
 
 window.deleteCollection = async function(id) {
     if(confirm('Are you sure you want to delete this collection?')) {
